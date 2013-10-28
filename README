@@ -5,11 +5,11 @@ Mongo views plugin for Play (2.1.5)
 2. clone repository
 	$ git clone git@github.com:TPTeam/mongo_views_plugin.git
 3. compile
-'''
+''
 	{your_project_folder} $ play
 	[mongo-views-plugin] $ clean
 	[mongo-views-plugin] $ compile
-'''
+''
 4. publish
 	[mongo-views-plugin] $ publish-local
 
