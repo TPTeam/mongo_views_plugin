@@ -14,7 +14,7 @@ Mongo views plugin for Play (2.1.5)
 4. publish
 	[mongo-views-plugin] $ publish-local
 
-Congratulations! The plugin is now available into your ${PLAY_HOME}/repository/local/
+Congratulations! The plugin is now available into your {your_play_home}/repository/local/
 
 Now add it to {your_project_folder}/project/Build.scala
 
@@ -23,7 +23,7 @@ Now add it to {your_project_folder}/project/Build.scala
 Add the following line
 
  	val main = play.Project(appName, appVersion, appDependencies).settings(
- 		<line resolvers += "Local Play Repository" at "play/repository/local/"
+ 		line resolvers += "Local Play Repository" at "{your_play_home}/repository/local/"
  	)
  	
 Done!	
