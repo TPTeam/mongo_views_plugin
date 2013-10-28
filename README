@@ -23,7 +23,7 @@ Now add it to {your_project_folder}/project/Build.scala
 Add the following line
 
  	val main = play.Project(appName, appVersion, appDependencies).settings(
- 		**<line resolvers += "Local Play Repository" at "play/repository/local/"**
+ 		<line resolvers += "Local Play Repository" at "play/repository/local/"
  	)
  	
 Done!	
