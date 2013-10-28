@@ -77,25 +77,6 @@ trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
       Akka.future {
         implicit val params = request.queryString
         
-        val isInit =
-        for {
-          ps <- params.get("init")
-          p <-  ps.headOption
-        } yield {
-          p.equals("true")
-        }
-        
-        (isInit) match {
-          case Some(true) =>
-            JsObject(
-            		Seq(
-            				"headers" -> toJson(elemsToDisplay),
-            				"paginationType" -> toJson("cubePagination"),
-            				"sDom" -> toJson("<\"dataTableHeader\"fp<\"tableToolbar\">><\"dataTableBody\"rt><\"dataTableFooter\">")
-            			)
-            )
-            
-          case _ =>
             /**
              * 	Construct the JSON to return
              */
@@ -117,7 +98,7 @@ trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
                        ).toSeq)   
           )
         )
-        }
+        //}
       }
 
     Async {
