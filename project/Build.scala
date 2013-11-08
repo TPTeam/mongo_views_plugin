@@ -5,7 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName         = "mongo-views-plugin"
-  val appVersion      = "1.0-SNAPSHOT"
+  val appVersion      = "0.3"
 
   val appDependencies = Seq(
     "se.radley" %% "play-plugins-salat" % "1.3.0"

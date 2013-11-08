@@ -11,23 +11,21 @@ import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import Json._
+import scala.concurrent.Future
 import models._
 
 trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
   self: Controller =>
   
-    
 	/*
 	 * To implement or to
 	 * override
 	 */
-    //val singleton: models.persistance.PersistanceCompanion[C]
     def elemValues(elem :C): Seq[String]
     val elemsToDisplay = Seq("name","description")
     val defaultDisplayLenth: Long = 10
 	val defaultSortBy = "name"
     
-    //lazy val obj = singleton
 	def sortBy(implicit params: Map[String,Seq[String]]) =
 		  tryo(elemsToDisplay(sortCol.toInt)).getOrElse(defaultSortBy)
 	
@@ -72,9 +70,8 @@ trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
                 else pageSize toString
               }))
   
-    def table = Action { implicit request ⇒
-    val promiseOfResult =
-      Akka.future {
+    def table = Action.async { implicit request ⇒
+      Future {
         implicit val params = request.queryString
         
             /**
@@ -82,7 +79,8 @@ trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
              */
             import Json._
             import tp_utils.Jsoner._
-                
+              
+            Ok(
             JsObject(
             		Seq(
             				"sEcho" -> toJsVal(sEcho),
@@ -97,13 +95,7 @@ trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
                             ))
                        ).toSeq)   
           )
-        )
-        //}
+        ))
       }
-
-    Async {
-      promiseOfResult.map(res ⇒
-        Ok(res))
-    }
   }
 }
