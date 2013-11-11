@@ -38,7 +38,7 @@ trait CRUDer[C <: ModelObj] extends SingletonDefiner[C] {
       	viewCreateForm.apply(createForm)
   }
 
-  def edit(id: String) = Action { 
+  def edit(id: String): EssentialAction = Action { 
     implicit request =>
       (obj.findOneById(new ObjectId(id))) match {
       	case Some(elem) =>
