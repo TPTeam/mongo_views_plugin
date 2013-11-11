@@ -14,8 +14,10 @@ import Json._
 import play.api.data._
 import models._
 import controllerhelper._
+import play.core._
+import scala.concurrent._
 
-trait CRUDer[C <: ModelObj] extends SingletonDefiner[C] {
+trait CRUDer[C <: ModelObj] extends SingletonDefiner[C] with Router.Routes {
   self: Controller =>
     
 	def form: Form[C]
@@ -79,5 +81,59 @@ trait CRUDer[C <: ModelObj] extends SingletonDefiner[C] {
               obj.delete(elem.myId)
               Ok("Removed")
           }
+  
+  /*
+   * Routable element
+   */
+  
+  implicit lazy val paths = 
+    CRUDerPaths(
+    	prefix+"/edit",
+  		prefix+"/new",
+  		prefix+"/submit"    
+    )
+  
+  private val promiseOfPath: scala.concurrent.Promise[String] = 
+    scala.concurrent.Promise[String]
+  private val futurePath = promiseOfPath.future
+  
+  def setPrefix(prefix: String) = 
+	promiseOfPath.success(prefix)
+  def prefix = 
+  	tryo{futurePath.value.get.get}.getOrElse("")
+
+  def documentation = Nil
+  
+  def routes = 
+    new scala.runtime.AbstractPartialFunction[RequestHeader, Handler] {
+		override def applyOrElse[A <: RequestHeader, B >: Handler](rh: A, default: A => B) = {
+			val toCheck = 
+			  if (rh.path.startsWith(prefix)) 
+			    //to be REIMPLEMENTED
+			    prefix + "/" + tryo{rh.path.replaceFirst(prefix, "").split("/").tail.head}.getOrElse("")
+			  else
+			    rh.path
+			    
+			(rh.method, toCheck) match {
+				case ("GET", paths.create) => create
+				case ("GET", paths.edit) => edit(rh.path.split("/").last)
+				case ("POST", paths.submit) => submit
+				case _ => default(rh)
+			}
+		}
+		def isDefinedAt(rh: RequestHeader) =
+		  (rh.method, rh.path.drop(1)) match {
+				case ("GET", "create") => true
+				case ("GET", "edit") => true
+				case ("POST", "submit") => true
+				case _ => false
+		}
+  }
 
 }
+
+case class CRUDerPaths(
+    edit: String,
+    create: String,
+    submit: String
+    )
