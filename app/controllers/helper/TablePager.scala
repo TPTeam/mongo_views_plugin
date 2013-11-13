@@ -13,6 +13,7 @@ import play.api.libs.json._
 import Json._
 import scala.concurrent.Future
 import models._
+import controllerhelper._
 
 trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
   self: Controller =>
@@ -91,7 +92,7 @@ trait TablePager[C <: ModelObj] extends SingletonDefiner[C] {
             						actualPage.map(elem => 
             			  JsObject(
             			      elemValues(elem).zipWithIndex.map(e =>
-            			      		e._2.toString -> toJson(e._1)
+            			      		e._2.toString -> toJson(fromMongoToView(e._1))
                             ))
                        ).toSeq)   
           )

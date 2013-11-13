@@ -7,6 +7,20 @@ import play.api.libs.json._
 import play.api.mvc._
 
 package object controllerhelper {
+  
+  def fromMongoToView(x: String) = 
+    x.replace("%£","$").replace("%§",".")
+  def fromViewToMongo(x: String) = 
+    x.replace("$", "%£").replace(".","%§")
+  
+  implicit def fromMappingToVerifiedMongoString(x: Mapping[String]) =
+    new  {
+	  def convertMongo:  play.api.data.Mapping[String] = {
+	    x.transform(
+	        x1 => fromViewToMongo(x1), 
+	        x2 => fromMongoToView(x2))
+	  }
+  	}
 
   implicit def fromMappingToVerifiedId(x: Mapping[String]) =
     new {
